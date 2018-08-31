@@ -54,7 +54,8 @@ app.get('/greeted', function(req, res) {
 
 app.get('/greeted/:user', function(req, res) {
   res.render('greetedUser', {
-    greetNumber: greet.returnUser(user)
+     userGreeted: req.params.user,
+     greetNumber: greet.returnUser(req.params.user)
   });
 });
 
