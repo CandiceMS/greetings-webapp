@@ -1,0 +1,63 @@
+<!-- <head>
+    <meta charset="utf-8">
+    <title>Greetings WebApp</title>
+    <link rel="stylesheet" href="public/index-grid.css">
+    <link rel="stylesheet" href="public/greet.css">
+</head> -->
+
+{{{body}}}
+
+    <div class="container">
+      <div class="row">
+        <h1>GREETINGS</h1>
+      </div>
+      <div class="row">
+        <form class="" action="/greetings" method="post">
+        <label for="inputName">Please Enter Name</label>
+        <input type="text" name="inputName" value="" class="nameBox">
+      </div>
+      <div class="row">
+        <table>
+          <tr>
+            <td>
+              <input type="radio" name="language" value="english" class="languages">
+            </td>
+            <td>
+              <label for="english">English</label>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input type="radio" name="language" value="sesotho" class="languages">
+            </td>
+            <td>
+              <label for="sesotho">Sesotho</label>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <input type="radio" name="language" value="french" class="languages">
+            </td>
+            <td>
+              <label for="french">French</label>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="row">
+        <button type="submit" name="greetMe" class="buttons">Greet Me</button>
+        <output name="alertName" class="alertDisplay">{{alert}}</output>
+        <strong><output class="displayGreeting" name="greetingResult">{{greetPerson}}</output></strong>
+      </form>
+      </div>
+      <div class="row">
+        Number Of <a href="/greeted">Names Greeted:</a>
+        <br>
+        <strong><output class="count" name="countResult" type="number">{{count}}</output></strong>
+      </div>
+      <div class="row">
+        <form class="" action="clear" method="post">
+          <button type="submit" name="resetBtn" class="buttons">Reset Counter</button>
+        </form>
+      </div>
+    </div>

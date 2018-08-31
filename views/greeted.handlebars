@@ -1,0 +1,10 @@
+
+{{{body}}}
+<table class="userLog">
+  <th>Users Greeted</th>
+  {{#each userCount}}
+  <tr>
+    <td><a href="/greeted/:{{.}}">{{.}}</a></td>
+  </tr>
+  {{/each}}
+</table>
