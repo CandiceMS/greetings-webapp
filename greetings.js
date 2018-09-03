@@ -32,6 +32,8 @@ module.exports = function () {
     }
 
   function returnUser(username) {
+    console.log(map[username]);
+    
     return map[username];
   }
 

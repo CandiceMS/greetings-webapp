@@ -56,3 +56,13 @@
   border-collapse: collapse;
   padding: 2rem;
 }
+th {
+  font-size: 40px;
+}
+
+.greetedUser {
+  margin: 10%;
+  padding: 2rem;
+  text-align: center;
+  border: 2px solid grey;
+}
