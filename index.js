@@ -64,9 +64,3 @@ app.post('/clear', function(req, res) {
   res.redirect('/');
 });
 
-// app.get('/actions/:type', function(req, res) {
-//   res.render('filter', {
-//     actionFilter: setBill.filterActions(req.params.type),
-//     totalForAction: setBill.actionTotal(req.params.type)
-//   });
-// });
