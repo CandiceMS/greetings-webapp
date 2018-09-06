@@ -4,7 +4,24 @@ const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 
 let greetings = require('./greetings');
-let greet = greetings();
+
+const postgres = require('pg');
+const Pool = postgres.Pool;
+
+let useSSL = false;
+if(process.env.DATABASE_URL){
+  useSSL = true;
+}
+
+const connectionString = process.env.DATABASE_URL || 'postgresql://coder:pg123@localhost:5432/greet_users'
+
+const pool = new Pool({
+  connectionString,
+  ssl:useSSL
+})
+
+const greet = greetings(pool);
+
 
 let PORT = process.env.PORT || 3500;
 
@@ -35,32 +52,31 @@ app.get('/', function(req, res) {
 //     res.redirect('/');
 // });
 
-app.post('/greetings', function(req, res) {
-  let language = req.body.language;
-  let name = req.body.inputName;
-    greet.assignName(language, name);
+app.post('/greetings', async function(req, res) {
+   let language = req.body.language;
+   let name = req.body.inputName;
   res.render('home', {
     alert: greet.alert(name, language),
-    greetPerson: greet.greetPerson(language, name),
-    count: greet.counter()
+    greetPerson: await greet.greetPerson(language, name),
+    count: await greet.counter()
   });
 });
 
-app.get('/greeted', function(req, res) {
+app.get('/greeted', async function(req, res) {
   res.render('greeted', {
-    userCount: greet.returnMap()
+    userCount: await greet.returnUsers()
   });
 });
 
-app.get('/greeted/:user', function(req, res) {
+app.get('/greeted/:user', async function(req, res) {
   res.render('greetedUser', {
      userGreeted: req.params.user,
-     greetNumber: greet.returnUser(req.params.user)
+     greetNumber: await greet.returnUserGreet(req.params.user)
   });
 });
 
-app.post('/clear', function(req, res) {
-   greet.resetCount();
+app.post('/clear', async function(req, res) {
+   await greet.resetCount();
   res.redirect('/');
 });
 

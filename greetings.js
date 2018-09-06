@@ -1,40 +1,20 @@
-module.exports = function () {
-  // function (storedMap)
-  let greetCount = 0;
-  let map = {};
+module.exports = function (pool) {
 
-  // function storeMap(){
-  //   if (storedMap) {
-  //     map = storedMap;
-  //   }
-  // }
-
-  function assignName(checkedLanguage, nameInput) {
-// storeMap();
-  let nameLower = nameInput.toLowerCase();
-  let name = nameLower.charAt(0).toUpperCase() + nameLower.slice(1);
-
-    if (name !== '' && checkedLanguage) {
-      if (map[name] === undefined){
-        map[name] = 0;
-      }
-      map[name] += 1;
-     }
-  }
-
-  function returnMap() {
-    return Object.keys(map);
-  }
-
-  function counter() {
-    greetCount = Object.keys(map).length;
-    return greetCount;
+  async function counter() {
+    let greetCount = await pool.query('select * from users');
+    return greetCount.rowCount
     }
 
-  function returnUser(username) {
-    console.log(map[username]);
-    
-    return map[username];
+  async function returnUsers() {
+    let users = await pool.query('select * from users');
+    // console.log(users.rows);    
+    return users.rows;
+  }
+
+  async function returnUserGreet(name) {
+    let userGreetCount = await pool.query('select greet_number from users where username = $1', [name]);   
+    //  console.log(userGreetCount.rows);    
+    return userGreetCount.rows[0].greet_number;
   }
 
   function alert(nameInput, checkedLanguage) {
@@ -54,10 +34,20 @@ module.exports = function () {
     }
     }
 
-  function greetPerson(checkedLanguage, nameInput) {
+  async function greetPerson(checkedLanguage, nameInput) {
     let nameLower = nameInput.toLowerCase();
     let name = nameLower.charAt(0).toUpperCase() + nameLower.slice(1);
+
     let greet = ''
+
+    if (name !== '' && checkedLanguage) { 
+      let nameResult = await pool.query('select * from users where username = $1', [name])
+      if(nameResult.rowCount === 0){
+        await pool.query('insert into users(username,greet_number) values($1, $2)', [name, 0])
+      }
+      await pool.query('update users set greet_number = greet_number + 1 where username = $1', [name])
+    };
+
       if (checkedLanguage === "english") {
         greet = "Hello ";
       }
@@ -75,19 +65,17 @@ module.exports = function () {
       }
   }
 
-  function resetCount() {
-    map = {};
-    greetCount = 0;
+  async function resetCount() {
+    let reset = await pool.query('delete from users')
+    return reset.rows
   }
 
 return {
-  // storeMap,
-  assignName,
-  returnMap,
   greetPerson,
   counter,
   alert,
   resetCount,
-  returnUser
+  returnUsers,
+  returnUserGreet
 }
 }
