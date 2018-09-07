@@ -4,8 +4,20 @@ let Greetings = require("../greetings");
 let postgres = require('pg');
 const Pool = postgres.Pool
 
+// const pool = new Pool({
+//   connectionString: 'postgresql://coder:pg123@localhost:5432/greet_users'
+// })
+
+let useSSL = false;
+if(process.env.DATABASE_URL){
+  useSSL = true;
+}
+
+const connectionString = process.env.DATABASE_URL || 'postgresql://coder:pg123@localhost:5432/greet_users'
+
 const pool = new Pool({
-  connectionString: 'postgresql://coder:pg123@localhost:5432/greet_users'
+  connectionString,
+  ssl:useSSL
 })
 
 describe('Greet Me', function(){ 
