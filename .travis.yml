@@ -3,3 +3,17 @@ language:
 
 node_js:
   - "8.9.4"
+
+env:
+     - DATABASE_URL=postgresql://postgres@localhost:5432/greet_users
+
+before_script:
+  # - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5/trust/g' /etc/postgresql/*/main/pg_hba.conf
+  # - sudo service postgresql restart
+  - psql -c 'create database  greet_users;' -U postgres
+  - psql -U postgres -d greet_users -a -f userTable.sql
+
+addons:
+    apt:
+    packages:
+    - postgresql-server-dev-9.2
