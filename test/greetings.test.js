@@ -8,11 +8,11 @@ const pool = new Pool({
   connectionString: 'postgresql://coder:pg123@localhost:5432/greet_users'
 })
 
-beforeEach(async function() {
-    await pool.query("delete from users");
-  });   
-  
 describe('Greet Me', function(){ 
+
+    beforeEach(async function() {
+        await pool.query("delete from users");
+      });   
 
     it('should greet Pholisa in English', async function(){
       var greetUser = Greetings(pool);
