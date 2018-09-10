@@ -3,7 +3,7 @@ const app = express();
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 
-let greetings = require('./greetings');
+let Greetings = require('./greetings');
 
 const postgres = require('pg');
 const Pool = postgres.Pool;
@@ -20,7 +20,10 @@ const pool = new Pool({
   ssl:useSSL
 })
 
-const greet = greetings(pool);
+const greetings = Greetings(pool);
+const GreetRoutes = require('./greeting_routes');
+const greetRoutesFactory = GreetRoutes(greetings);
+
 
 
 let PORT = process.env.PORT || 3500;
@@ -52,31 +55,11 @@ app.get('/', function(req, res) {
 //     res.redirect('/');
 // });
 
-app.post('/greetings', async function(req, res) {
-   let language = req.body.language;
-   let name = req.body.inputName;
-  res.render('home', {
-    alert: greet.alert(name, language),
-    greetPerson: await greet.greetPerson(language, name),
-    count: await greet.counter()
-  });
-});
+app.post('/greetings', greetRoutesFactory.greetings);
 
-app.get('/greeted', async function(req, res) {
-  res.render('greeted', {
-    userCount: await greet.returnUsers()
-  });
-});
+app.get('/greeted', greetRoutesFactory.greeted);
 
-app.get('/greeted/:user', async function(req, res) {
-  res.render('greetedUser', {
-     userGreeted: req.params.user,
-     greetNumber: await greet.returnUserGreet(req.params.user)
-  });
-});
+app.get('/greeted/:user', greetRoutesFactory.greetedUser);
 
-app.post('/clear', async function(req, res) {
-   await greet.resetCount();
-  res.redirect('/');
-});
+app.post('/clear', greetRoutesFactory.clear);
 
